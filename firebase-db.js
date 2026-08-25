@@ -110,25 +110,27 @@ const FDB = {
       });
   },
   async checkCodeAndMark(studentNumber, fullName, inputCode) {
-    const codeSnap = await db.collection("meta").doc("code").get();
-    const current = codeSnap.exists ? codeSnap.data() : null;
-    if (!current || current.date !== this.todayStr()) {
-      return { ok: false, message: "No active code for today yet. Ask your admin to generate one." };
-    }
-    if (current.code !== String(inputCode).trim()) {
-      return { ok: false, message: "That code is incorrect or expired." };
-    }
-    const dupe = await db.collection("attendance")
-      .where("studentNumber", "==", studentNumber)
-      .where("date", "==", this.todayStr())
-      .limit(1).get();
-    if (!dupe.empty) return { ok: false, message: "You're already marked present today." };
+  await this.ensureAnonAuth();
+  const codeSnap = await db.collection("meta").doc("code").get();
+  const current = codeSnap.exists ? codeSnap.data() : null;
+  if (!current || current.date !== this.todayStr()) {
+    return { ok: false, message: "No active code for today yet. Ask your admin to generate one." };
+  }
+  if (current.code !== String(inputCode).trim()) {
+    return { ok: false, message: "That code is incorrect or expired." };
+  }
+  const dupe = await db.collection("attendance")
+    .where("studentNumber", "==", studentNumber)
+    .where("date", "==", this.todayStr())
+    .limit(1).get();
+  if (!dupe.empty) return { ok: false, message: "You're already marked present today." };
 
-    await db.collection("attendance").add({
-      studentNumber, fullName, date: this.todayStr(), time: this.timeStr(), status: "present",
-    });
-    return { ok: true };
-  },
+  await db.collection("attendance").add({
+    studentNumber, fullName, date: this.todayStr(), time: this.timeStr(), status: "present",
+    uid: this.currentUid(), code: current.code,
+  });
+  return { ok: true };
+},
 
   /* ----------------------------------- code ------------------------------------ */
   listenCode(callback) {
