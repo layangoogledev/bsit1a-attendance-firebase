@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Replace with the admin email you create in Firebase Authentication.
+    function isAdmin() {
+      return isSignedIn() &&
+        request.auth.token.email == "layannoriel9@gmail.com";
+    }
+
+    // Roster: anyone can read (needed to check a name/number at login),
+    // only the admin can add or remove students.
+    match /students/{studentNumber} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Attendance: any signed-in device (students sign in anonymously,
+    // automatically) can read and create their own check-in. Only the
+    // admin can edit or delete records.
+    match /attendance/{recordId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    // The single "today's code" document.
+    match /meta/code {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Announcements: everyone can read, only the admin can post/delete.
+    match /announcements/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Excuse letters: anyone signed in can submit one. Only the admin,
+    // or the exact device/session that submitted it, can read it back —
+    // this is what keeps letters private from classmates.
+    match /excuses/{id} {
+      allow create: if isSignedIn();
+      allow read: if isAdmin() || (isSignedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+  }
+}

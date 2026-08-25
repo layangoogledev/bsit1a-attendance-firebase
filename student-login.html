@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Student Login · BSIT-1A Attendance</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="navbar">
+      <a class="brand" href="index.html">
+        <div class="brand-mark">1A</div>
+        <div class="brand-text"><b>BSIT-1A</b><span>FIREBASE_EDITION</span></div>
+      </a>
+      <div class="nav-actions">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Back</a>
+      </div>
+    </header>
+
+    <main class="center-screen">
+      <div class="panel fade-up" style="width:100%; max-width:420px;">
+        <div class="eyebrow">Student check-in</div>
+        <h2>Enter your details</h2>
+        <p style="margin-bottom:22px;">Use the exact name and student number your admin added to the roster.</p>
+
+        <div id="alertBox"></div>
+
+        <form id="loginForm">
+          <div class="field">
+            <label for="fullName">Full name</label>
+            <input type="text" id="fullName" placeholder="Juan Dela Cruz" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="studentNumber">10-digit student number</label>
+            <input type="text" id="studentNumber" class="mono" placeholder="0301234567" inputmode="numeric" maxlength="10" required />
+            <small>Numbers only, exactly 10 digits.</small>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Continue →</button>
+        </form>
+      </div>
+    </main>
+
+    <div class="footer-note">Not registered yet? Ask your admin to add your name and student number first.</div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-db.js"></script>
+  <script>
+    const form = document.getElementById("loginForm");
+    const alertBox = document.getElementById("alertBox");
+    const submitBtn = document.getElementById("submitBtn");
+
+    function showError(msg) {
+      alertBox.innerHTML = `<div class="alert alert-error">⚠ ${msg}</div>`;
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fullName = document.getElementById("fullName").value.trim();
+      const studentNumber = document.getElementById("studentNumber").value.trim();
+
+      if (!/^\d{10}$/.test(studentNumber)) { showError("Student number must be exactly 10 digits."); return; }
+      if (fullName.length < 2) { showError("Please enter your full name."); return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Checking...";
+      try {
+        const result = await FDB.studentLogin(fullName, studentNumber);
+        if (!result.ok) {
+          showError(result.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Continue →";
+          return;
+        }
+        window.location.href = "student-dashboard.html";
+      } catch (err) {
+        showError("Connection problem — check your Firebase setup (see FIREBASE_SETUP.md).");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Continue →";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Student Dashboard · BSIT-1A Attendance</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="navbar">
+      <a class="brand" href="index.html">
+        <div class="brand-mark">1A</div>
+        <div class="brand-text"><b>BSIT-1A</b><span>FIREBASE_EDITION</span></div>
+      </a>
+      <div class="nav-actions">
+        <span class="badge" id="whoBadge">◆ —</span>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn">Log out</button>
+      </div>
+    </header>
+
+    <main class="wrap" style="padding-top:28px; padding-bottom:40px; flex:1;">
+      <div class="eyebrow" id="dateLine">Today</div>
+      <h1 style="margin-bottom:24px;">Welcome, <span id="nameHeading">Student</span></h1>
+
+      <div class="split">
+        <div class="stack">
+          <div class="scan-card fade-up" id="scanCard">
+            <div class="eyebrow" style="justify-content:center;">Attendance check-in</div>
+            <div id="statusArea">
+              <div class="code-display">····</div>
+              <div class="meta">enter today's 4-digit code below</div>
+            </div>
+          </div>
+
+          <div class="panel fade-up delay-1">
+            <div id="checkinAlert"></div>
+            <form id="codeForm">
+              <div class="field">
+                <label for="codeInput">4-digit code</label>
+                <input type="text" id="codeInput" class="code-input mono" inputmode="numeric" maxlength="4" placeholder="0000" />
+              </div>
+              <button type="submit" class="btn btn-primary btn-block" id="submitCodeBtn">Mark me present</button>
+            </form>
+          </div>
+
+          <div class="panel fade-up delay-2">
+            <div class="eyebrow">Private to admin</div>
+            <h2>Send an excuse letter</h2>
+            <p>Only your admin can read this — your classmates can't see it.</p>
+            <div id="excuseAlert"></div>
+            <form id="excuseForm">
+              <div class="field">
+                <label for="excuseMsg">Your message</label>
+                <textarea id="excuseMsg" placeholder="Explain your absence or late arrival..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-violet btn-block">Send to admin</button>
+            </form>
+            <div id="myExcuses" style="margin-top:18px;"></div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="panel fade-up delay-1">
+            <div class="eyebrow">Broadcast</div>
+            <h2>Announcements</h2>
+            <div id="announcementsList" class="stack" style="gap:12px;"></div>
+          </div>
+
+          <div class="panel fade-up delay-2">
+            <div class="eyebrow">Your record</div>
+            <h2>Attendance history</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+                <tbody id="historyBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="footer-note">BSIT-1A · Section-only attendance tool · Live-synced via Firebase</div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-db.js"></script>
+  <script src="js/student.js"></script>
+</body>
+</html>

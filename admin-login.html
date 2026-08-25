@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Login · BSIT-1A Attendance</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="navbar">
+      <a class="brand" href="index.html">
+        <div class="brand-mark">1A</div>
+        <div class="brand-text"><b>BSIT-1A</b><span>FIREBASE_EDITION</span></div>
+      </a>
+      <div class="nav-actions">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Back</a>
+      </div>
+    </header>
+
+    <main class="center-screen">
+      <div class="panel fade-up" style="width:100%; max-width:400px;">
+        <div class="eyebrow">Restricted access</div>
+        <h2>Admin sign in</h2>
+        <p style="margin-bottom:22px;">Sign in with the admin account created in Firebase Authentication.</p>
+
+        <div id="alertBox"></div>
+
+        <form id="adminForm">
+          <div class="field">
+            <label for="email">Admin email</label>
+            <input type="email" id="email" autocomplete="username" required />
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" autocomplete="current-password" required />
+          </div>
+          <button type="submit" class="btn btn-violet btn-block" id="submitBtn">Sign in →</button>
+        </form>
+      </div>
+    </main>
+
+    <div class="footer-note">Create this account in Firebase console → Authentication → Users. See FIREBASE_SETUP.md.</div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-db.js"></script>
+  <script>
+    const form = document.getElementById("adminForm");
+    const submitBtn = document.getElementById("submitBtn");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const alertBox = document.getElementById("alertBox");
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Signing in...";
+      const result = await FDB.adminSignIn(email, password);
+      if (result.ok) {
+        window.location.href = "admin-dashboard.html";
+      } else {
+        alertBox.innerHTML = `<div class="alert alert-error">⚠ ${result.message}</div>`;
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Sign in →";
+      }
+    });
+  </script>
+</body>
+</html>

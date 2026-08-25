@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard · BSIT-1A Attendance</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="navbar">
+      <a class="brand" href="index.html">
+        <div class="brand-mark">1A</div>
+        <div class="brand-text"><b>BSIT-1A</b><span>ADMIN_CONSOLE</span></div>
+      </a>
+      <div class="nav-actions">
+        <span class="badge" id="adminBadge">▣ admin</span>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn">Log out</button>
+      </div>
+    </header>
+
+    <main class="wrap" style="padding-top:28px; padding-bottom:40px; flex:1;">
+      <div class="eyebrow" id="dateLine">Today</div>
+      <h1 style="margin-bottom:22px;">Admin console</h1>
+
+      <div class="stat-grid" id="statGrid"></div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="today">Today</div>
+        <div class="tab" data-tab="history">History</div>
+        <div class="tab" data-tab="students">Manage Students</div>
+        <div class="tab" data-tab="code">Generate Code</div>
+        <div class="tab" data-tab="announcements">Announcements</div>
+        <div class="tab" data-tab="excuses">Excuse Letters</div>
+      </div>
+
+      <section class="tab-panel active" id="panel-today">
+        <div class="panel">
+          <div class="row-between" style="margin-bottom:16px;">
+            <h2 style="margin:0;">Present today</h2>
+            <span class="muted mono" id="todayCount">0 checked in</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Name</th><th>Student No.</th><th>Time</th></tr></thead>
+              <tbody id="todayBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="panel-history">
+        <div class="panel">
+          <h2>Attendance history</h2>
+          <p>Grouped by date, most recent first.</p>
+          <div id="historyList" class="stack" style="gap:14px;"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="panel-students">
+        <div class="split">
+          <div class="panel">
+            <h2>Roster</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Name</th><th>Student No.</th><th></th></tr></thead>
+                <tbody id="rosterBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Add a student</h2>
+            <p>They'll be able to log in from any device right after this is added.</p>
+            <div id="addAlert"></div>
+            <form id="addStudentForm">
+              <div class="field">
+                <label for="newName">Full name</label>
+                <input type="text" id="newName" placeholder="Juan Dela Cruz" required />
+              </div>
+              <div class="field">
+                <label for="newNumber">10-digit student number</label>
+                <input type="text" id="newNumber" class="mono" inputmode="numeric" maxlength="10" placeholder="0301234567" required />
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Add student</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="panel-code">
+        <div class="split">
+          <div class="scan-card">
+            <div class="eyebrow" style="justify-content:center;">Today's access code</div>
+            <div class="code-display" id="currentCodeDisplay">····</div>
+            <div class="meta" id="codeMeta">no code generated yet</div>
+          </div>
+          <div class="panel">
+            <h2>Generate a new code</h2>
+            <p>Generating a new code immediately invalidates the previous one, on every student's device.</p>
+            <button class="btn btn-violet btn-block" id="generateBtn">Generate 4-digit code</button>
+            <hr class="divider" />
+            <div class="eyebrow">Live check-in feed</div>
+            <div class="log-feed" id="logFeed"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="panel-announcements">
+        <div class="split">
+          <div class="panel">
+            <h2>Post an announcement</h2>
+            <div id="annAlert"></div>
+            <form id="annForm">
+              <div class="field">
+                <label for="annText">Message</label>
+                <textarea id="annText" placeholder="Class moved to Room 204 tomorrow..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Publish to students</button>
+            </form>
+          </div>
+          <div class="panel">
+            <h2>Posted announcements</h2>
+            <div id="annList" class="stack" style="gap:12px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="panel-excuses">
+        <div class="panel">
+          <h2>Private excuse letters</h2>
+          <p>Only visible to you.</p>
+          <div id="excusesList" class="stack" style="gap:12px;"></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="footer-note">BSIT-1A · Admin console · Live-synced via Firebase</div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-db.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
